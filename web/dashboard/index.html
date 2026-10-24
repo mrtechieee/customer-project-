@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Customer Analysis Dashboard</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/plotly.js-dist-min@2.35.2/plotly.min.js"></script>
+<link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+<header>
+<div><a href="../index.html" onclick="if(window.parent!==window){parent.postMessage('ci-home','*');return false}" aria-label="Back to Customer Insights home" style="color:inherit;text-decoration:none"><h1>Customer <span>Insights</span> · Analysis Dashboard</h1></a><div class="sub">Upload → Clean → Segment → Visualize → Report. All processing happens in your browser.</div></div>
+<div class="row"><a class="btn g" href="../index.html" onclick="if(window.parent!==window){parent.postMessage('ci-home','*');return false}" style="text-decoration:none;display:inline-flex;align-items:center">← Home</a><button class="btn g" id="demo">Load demo data</button><button class="btn" id="dlcsv" disabled>Cleaned CSV</button><button class="btn" id="dlrep" disabled>Report (.md)</button></div>
+</header>
+<div class="wrap">
+<aside>
+<h3>Data</h3>
+<div class="drop" id="drop"><input type="file" id="file" accept=".csv,.xlsx,.xls,text/csv" aria-label="Choose a CSV or Excel file"><div id="dtxt">Drop CSV / Excel here<br>or click to browse</div></div>
+<div id="stage" class="hide"><div class="fi"><b id="fn"></b><small id="fm"></small></div><button class="btn" id="analyze" style="width:100%;margin-top:10px" disabled>Analyze data</button></div>
+<h3>History <span id="hc" class="sub"></span></h3><div id="hist"></div><div class="sub" id="hnote" style="margin-top:6px"></div>
+<h3>Cleaning</h3>
+<div class="chk"><input type="checkbox" id="dedupe" checked><span>Drop duplicate rows</span></div>
+<div class="chk"><input type="checkbox" id="outl"><span>Exclude IQR outliers (spending)</span></div>
+<h3>Parameters</h3>
+<label>Age bin size: <b id="abv">10</b> years</label><input type="range" id="ab" min="2" max="30" step="1" value="10">
+<label>High-value percentile: <b id="hpv">90</b></label><input type="range" id="hp" min="50" max="99" value="90"><label>Currency</label><select id="cur"><option value="auto">Auto-detect from data</option><option value="INR">₹ Indian Rupee (INR)</option><option value="USD">$ US Dollar (USD)</option><option value="EUR">€ Euro (EUR)</option><option value="GBP">£ Pound (GBP)</option><option value="NONE">No symbol</option></select><div class="sub" id="curn" style="margin-top:4px"></div>
+<h3>Filters</h3>
+<label>Age range</label><div class="row"><input type="number" id="a0" placeholder="min"><input type="number" id="a1" placeholder="max"></div>
+<label>Date range</label><div class="row"><input type="date" id="d0"><input type="date" id="d1"></div>
+<label>Location (multi-select)</label><select id="loc" multiple></select>
+<label>Category (multi-select)</label><select id="cat" multiple></select>
+<button class="btn g" id="reset" style="margin-top:12px;width:100%">Reset filters</button>
+</aside>
+<main>
+<div id="loading" class="card hide" role="status" aria-live="polite"><div class="spin" aria-hidden="true"></div><h2 id="lt">Analyzing your data…</h2><p class="sub" id="lf"></p><div class="pb"><i id="lp"></i></div><ul id="ls"></ul></div>
+<div id="empty" class="card empty"><h2>No dataset loaded</h2><p class="sub">Upload a file with columns such as CustomerID, Age, Gender, Location, Category, PurchaseDate, Spending — or load the demo data. Missing optional columns are skipped gracefully.</p><div id="histm" style="text-align:left;max-width:540px;margin:0 auto"></div></div>
+<div id="app" class="hide">
+<div class="kpis" id="kpis"></div>
+<div class="tabs" id="tabs"></div>
+<section id="p-data"></section><section id="p-demo" class="hide"></section><section id="p-seg" class="hide"></section><section id="p-pat" class="hide"></section><section id="p-rep" class="hide"></section>
+</div>
+</main>
+</div>
+<script src="dashboard.js"></script>
+</body>
+</html>
